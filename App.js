@@ -9,6 +9,7 @@ export default class App extends Component {
     this.state = {
       tareas: [],
       texto: '',
+      cargando: true,
     };
   }
 
@@ -58,6 +59,12 @@ export default class App extends Component {
     AsyncStorage.getItem('@AppCursoUdemy:tareas')
       .then(valor => {
         console.log(valor);
+        setTimeout(() => {
+          this.setState({
+            cargando: false,
+          });
+        }, 3000);
+
         if (valor !== null) {
           const nuevasTareas = JSON.parse(valor);
           this.setState({
@@ -67,6 +74,9 @@ export default class App extends Component {
       })
       .catch(error => {
         console.log(error);
+        this.setState({
+          cargando: false,
+        });
       });
   };
 
@@ -80,7 +90,11 @@ export default class App extends Component {
           agregrar={this.agregarTarea}
         />
 
-        <Body tareas={this.state.tareas} eliminar={this.eliminarTarea} />
+        <Body
+          tareas={this.state.tareas}
+          eliminar={this.eliminarTarea}
+          cargando={this.state.cargando}
+        />
       </View>
     );
   }
